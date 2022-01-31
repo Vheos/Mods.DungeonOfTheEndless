@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DDA89305-1A61-41BE-8310-8F5256413A96}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Vheos.Mods.DungeonOfTheEndless</RootNamespace>
+    <AssemblyName>Vheos.Mods.DungeonOfTheEndless</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == '-|AnyCPU'">
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UNITY_NOMODULES_NET35|AnyCPU' ">
+    <OutputPath>bin\UNITY_NOMODULES_NET35\</OutputPath>
+    <DocumentationFile>bin\UNITY_NOMODULES_NET35\Vheos.Tools.DungeonOfTheEndless.xml</DocumentationFile>
+    <DefineConstants>DEBUG;UNITY;NOMODULES;NET35</DefineConstants>
+    <LangVersion>9.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'RELEASE_UNITY_NOMODULES_NET35|AnyCPU' ">
+    <OutputPath>bin\UNITY_NOMODULES_NET35\</OutputPath>
+    <DocumentationFile>bin\UNITY_NOMODULES_NET35\Vheos.Tools.DungeonOfTheEndless.xml</DocumentationFile>
+    <DefineConstants>UNITY;NOMODULES;NET35</DefineConstants>
+    <LangVersion>9.0</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp_publicized">
+      <HintPath>Private\Libraries\v1.1.5\Assembly-CSharp_publicized.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>Private\Libraries\v1.1.5\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>Private\Libraries\v1.1.5\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BepInEx">
+      <HintPath>..\Core\Private\Libraries\BepInEx.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>..\Core\Private\Libraries\0Harmony.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Tools\Extensions\Vheos.Tools.Extensions.csproj">
+      <Project>{4afe5e8c-29c0-4389-aaa0-55584146becf}</Project>
+      <Name>Vheos.Tools.Extensions</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Utilities\Vheos.Tools.Utilities.csproj">
+      <Project>{96d2cdb1-5ee9-4666-812d-9ecb8df005c4}</Project>
+      <Name>Vheos.Tools.Utilities</Name>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Core\Vheos.Mods.Core.csproj">
+      <Project>{a48747d8-e698-4c2c-bf11-0efed7d79ef0}</Project>
+      <Name>Vheos.Mods.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Code\Mods\CameraAndUI.cs" />
+    <Compile Include="Code\Core\Enums.cs" />
+    <Compile Include="Code\Mods\RoomsAndModules.cs" />
+    <Compile Include="Code\Core\InternalUtility.cs" />
+    <Compile Include="Code\Core\Main.cs" />
+    <Compile Include="Code\Mods\Cheats.cs" />
+    <Compile Include="Code\Mods\HeroesAndSkills.cs" />
+    <Compile Include="Code\Mods\Various.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>:: Global settings
+set Plugins_Local=BepInEx\Plugins\Vheos\
+set Version_Suffix=_vX.Y.Z
+set TempCopy=$(ProjectDir)\bin\.tmpcpy\
+rd /s /q %25TempCopy%25
+xcopy /y $(TargetDir)$(TargetName).dll %25TempCopy%25
+xcopy /y $(TargetDir)Vheos.Mods.Core.dll %25TempCopy%25
+xcopy /y $(TargetDir)Vheos.Tools.Extensions.dll %25TempCopy%25
+xcopy /y $(TargetDir)Vheos.Tools.Utilities.dll %25TempCopy%25
+
+    :: Project settings
+    set Game_Global="D:\Multiplayer\Dungeon of the Endless\"
+    set Game_EXE=steamclient_loader.exe
+    set Zip_Name=DotE_Mods
+    set Releases_Global=E:\Creativity\Programs\C#\Mods\DungeonOfTheEndless\Private\Releases\
+
+    if $(DefineConstants.Contains('DEBUG'))==True (
+        :: Debug
+        rd /s /q %25Game_Global%25%25Plugins_Local%25 
+        xcopy /e /y %25TempCopy%25 %25Game_Global%25%25Plugins_Local%25
+
+    ) else if $(DefineConstants.Contains('DEBUG'))==False (        
+        :: Release
+        rd /s /q %25Releases_Global%25%25Plugins_Local%25 
+        xcopy /e /y %25TempCopy%25 %25Releases_Global%25%25Plugins_Local%25 
+        powershell Compress-Archive -Path %25Releases_Global%25\BepInEx -DestinationPath %25Releases_Global%25\%25Zip_Name%25%25Version_Suffix%25.zip -Force
+        
+    )</PostBuildEvent>
+  </PropertyGroup>
+</Project>
