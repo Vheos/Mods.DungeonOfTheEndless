@@ -15,6 +15,7 @@
         static private ModSetting<bool> _heroPoolShowSecret;
         static private ModSetting<bool> _heroPoolSave;
         static private ModSetting<bool> _unlockAllShips;
+        static private ModSetting<bool> _unlockRefreezeratorInMultiplayer;
         static private ModSetting<bool> _timedEventsOverride;
         static private ModSetting<TimedEvents> _timedEvents;
         static private ModSetting<RoomEvent> _roomEventOverride;
@@ -29,6 +30,7 @@
             _heroPoolShowSecret = CreateSetting(nameof(_heroPoolShowSecret), false);
             _heroPoolSave = CreateSetting(nameof(_heroPoolSave), false);
             _unlockAllShips = CreateSetting(nameof(_unlockAllShips), false);
+            _unlockRefreezeratorInMultiplayer = CreateSetting(nameof(_unlockRefreezeratorInMultiplayer), false);
 
             _timedEventsOverride = CreateSetting(nameof(_timedEventsOverride), false);
             _timedEvents = CreateSetting(nameof(_timedEvents), (TimedEvents)0);
@@ -59,6 +61,8 @@
             }
 
             _unlockAllShips.Format("Unlock all ships");
+            using (Indent)
+                _unlockRefreezeratorInMultiplayer.Format("refreezerator in multiplayer");
 
             _timedEventsOverride.Format("Override timed events");
             using (Indent)
@@ -86,6 +90,7 @@
                     _heroPoolShowSecret.Value = true;
                     _heroPoolSave.Value = true;
                     _unlockAllShips.Value = true;
+                    _unlockRefreezeratorInMultiplayer.Value = true;
                     _timedEventsOverride.Value = true;
                     _timedEvents.Value = 0;
                     _roomEventOverride.Value = RoomEvent.None;
@@ -223,6 +228,10 @@
 
             __result = false;
         }
+
+        [HarmonyPatch(typeof(ShipConfig), nameof(ShipConfig.ForbidMultiplayer), MethodType.Getter), HarmonyPostfix]
+        static private void ShipConfig_ForbidMultiplayer_Getter_Post(ShipConfig __instance, ref bool __result)
+        => __result = !_unlockRefreezeratorInMultiplayer;
 
         // Timed events
         [HarmonyPatch(typeof(PrivateGameConfigManager), nameof(PrivateGameConfigManager.IsCommunityEventActive)), HarmonyPrefix]
